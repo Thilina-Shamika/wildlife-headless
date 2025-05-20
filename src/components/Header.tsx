@@ -76,7 +76,7 @@ export function Header() {
                   className="object-contain"
                 />
               ) : (
-                <span className="text-2xl font-bold text-black drop-shadow-sm">Wildlife</span>
+                <span className="text-2xl font-bold text-black drop-shadow-sm">Ceylonicus</span>
               )}
             </Link>
           </div>
