@@ -72,8 +72,8 @@ export default function ContactForm7({ subheading, heading, backgroundImage }: C
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
-        paddingTop: 48,
-        paddingBottom: 48,
+        paddingTop: 88,
+        paddingBottom: 88,
       }}
     >
       {/* Mobile padding with a style tag */}

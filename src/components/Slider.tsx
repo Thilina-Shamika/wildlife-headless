@@ -13,6 +13,22 @@ const THUMBNAIL_COUNT = 5;
 const MOBILE_THUMBNAIL_COUNT = 3;
 const AUTOPLAY_INTERVAL = 5000;
 
+function getFrontendPath(wpUrl: string) {
+  if (!wpUrl) return '/';
+  try {
+    const url = new URL(wpUrl);
+    const path = url.pathname.replace(/\/+$/, '');
+    if (path === '/home') return '/';
+    return path || '/';
+  } catch {
+    if (wpUrl.startsWith('/')) {
+      if (wpUrl === '/home/' || wpUrl === '/home') return '/';
+      return wpUrl.replace(/\/+$/, '');
+    }
+    return wpUrl;
+  }
+}
+
 export function Slider({ slides }: SliderProps) {
   const [centerIndex, setCenterIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
@@ -109,13 +125,34 @@ export function Slider({ slides }: SliderProps) {
             key={mainSlide.description + centerIndex}
             dangerouslySetInnerHTML={{ __html: mainSlide.description }}
           />
-          <Link
-            href={mainSlide.link?.url || '#'}
-            className={`inline-block bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition-all duration-700 shadow-lg ${isFading ? 'opacity-0 -translate-y-8' : 'opacity-100 translate-y-0'}`}
-            key={mainSlide.button_text + centerIndex}
-          >
-            {mainSlide.button_text}
-          </Link>
+          {/* Button Link */}
+          {(() => {
+            const frontendPath = getFrontendPath(mainSlide.link?.url || '#');
+            const isInternal = frontendPath.startsWith('/');
+            if (isInternal) {
+              return (
+                <Link
+                  href={frontendPath}
+                  className={`inline-block bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition-all duration-700 shadow-lg ${isFading ? 'opacity-0 -translate-y-8' : 'opacity-100 translate-y-0'}`}
+                  key={mainSlide.button_text + centerIndex}
+                >
+                  {mainSlide.button_text}
+                </Link>
+              );
+            } else {
+              return (
+                <a
+                  href={mainSlide.link?.url || '#'}
+                  target={mainSlide.link?.target || '_self'}
+                  rel={mainSlide.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
+                  className={`inline-block bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition-all duration-700 shadow-lg ${isFading ? 'opacity-0 -translate-y-8' : 'opacity-100 translate-y-0'}`}
+                  key={mainSlide.button_text + centerIndex}
+                >
+                  {mainSlide.button_text}
+                </a>
+              );
+            }
+          })()}
 
           {/* Thumbnails */}
           <div className="flex justify-center gap-8 mt-16 w-full items-center">

@@ -14,6 +14,22 @@ interface HeaderMenu {
   menu?: HeaderMenuItem[];
 }
 
+function getFrontendPath(wpUrl: string) {
+  if (!wpUrl) return '/';
+  try {
+    const url = new URL(wpUrl);
+    const path = url.pathname.replace(/\/+$/, '');
+    if (path === '/home') return '/';
+    return path || '/';
+  } catch {
+    if (wpUrl.startsWith('/')) {
+      if (wpUrl === '/home/' || wpUrl === '/home') return '/';
+      return wpUrl.replace(/\/+$/, '');
+    }
+    return wpUrl;
+  }
+}
+
 export function Header() {
   const [header, setHeader] = useState<HeaderMenu | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -46,19 +62,33 @@ export function Header() {
             <X className="w-7 h-7" />
           </button>
           <ul className="flex flex-col gap-6 text-lg font-medium text-white p-8 pt-16">
-            {header?.menu?.map((item, idx) => (
-              <li key={idx}>
-                <a
-                  href={item.page_link.url}
-                  target={item.page_link.target || '_self'}
-                  rel={item.page_link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                  className="hover:text-primary transition-colors text-white"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.page_name}
-                </a>
-              </li>
-            ))}
+            {header?.menu?.map((item, idx) => {
+              const frontendPath = getFrontendPath(item.page_link.url);
+              const isInternal = frontendPath.startsWith('/');
+              return (
+                <li key={idx}>
+                  {isInternal ? (
+                    <Link
+                      href={frontendPath}
+                      className="hover:text-primary transition-colors text-white"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.page_name}
+                    </Link>
+                  ) : (
+                    <a
+                      href={item.page_link.url}
+                      target={item.page_link.target || '_self'}
+                      rel={item.page_link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                      className="hover:text-primary transition-colors text-white"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.page_name}
+                    </a>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
@@ -82,18 +112,31 @@ export function Header() {
           </div>
           {/* Desktop Menu */}
           <ul className="hidden md:flex gap-8 text-base font-medium text-white">
-            {header?.menu?.map((item, idx) => (
-              <li key={idx}>
-                <a
-                  href={item.page_link.url}
-                  target={item.page_link.target || '_self'}
-                  rel={item.page_link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                  className="hover:text-primary transition-colors text-white"
-                >
-                  {item.page_name}
-                </a>
-              </li>
-            ))}
+            {header?.menu?.map((item, idx) => {
+              const frontendPath = getFrontendPath(item.page_link.url);
+              const isInternal = frontendPath.startsWith('/');
+              return (
+                <li key={idx}>
+                  {isInternal ? (
+                    <Link
+                      href={frontendPath}
+                      className="hover:text-primary transition-colors text-white"
+                    >
+                      {item.page_name}
+                    </Link>
+                  ) : (
+                    <a
+                      href={item.page_link.url}
+                      target={item.page_link.target || '_self'}
+                      rel={item.page_link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                      className="hover:text-primary transition-colors text-white"
+                    >
+                      {item.page_name}
+                    </a>
+                  )}
+                </li>
+              );
+            })}
           </ul>
           {/* Mobile Hamburger Button */}
           <button

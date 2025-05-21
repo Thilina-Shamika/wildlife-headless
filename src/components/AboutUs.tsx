@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { WordPressAboutUs } from '@/types/wordpress';
@@ -8,8 +8,28 @@ interface AboutUsProps {
   about: WordPressAboutUs;
 }
 
+function getFrontendPath(wpUrl: string) {
+  if (!wpUrl) return '/';
+  try {
+    const url = new URL(wpUrl);
+    const path = url.pathname.replace(/\/+$/, '');
+    if (path === '/home') return '/';
+    return path || '/';
+  } catch {
+    if (wpUrl.startsWith('/')) {
+      if (wpUrl === '/home/' || wpUrl === '/home') return '/';
+      return wpUrl.replace(/\/+$/, '');
+    }
+    return wpUrl;
+  }
+}
+
 export function AboutUs({ about }: AboutUsProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    console.log('AboutUs Component Props:', JSON.stringify(about, null, 2));
+  }, [about]);
 
   return (
     <section className="w-full py-20 bg-white" id="about-us">
@@ -19,24 +39,50 @@ export function AboutUs({ about }: AboutUsProps) {
           <div className="text-primary text-sm font-semibold uppercase tracking-wide">{about.sub_heading}</div>
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900">{about.main_heading}</h2>
           <div className="text-gray-700 text-sm md:text-sm" dangerouslySetInnerHTML={{ __html: about.short_description }} />
-          <Link
-            href={about.button_link?.url || '#'}
-            target={about.button_link?.target || '_self'}
-            className="inline-block bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition-all duration-300 shadow-lg"
-          >
-            {about.button_text}
-          </Link>
+          {/* Button Link */}
+          {(() => {
+            const frontendPath = getFrontendPath(about.button_link?.url || '#');
+            const isInternal = frontendPath.startsWith('/');
+            if (isInternal) {
+              return (
+                <Link
+                  href={frontendPath}
+                  className="inline-block bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition-all duration-300 shadow-lg"
+                >
+                  {about.button_text}
+                </Link>
+              );
+            } else {
+              return (
+                <a
+                  href={about.button_link?.url || '#'}
+                  target={about.button_link?.target || '_self'}
+                  rel={about.button_link?.target === '_blank' ? 'noopener noreferrer' : undefined}
+                  className="inline-block bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-90 transition-all duration-300 shadow-lg"
+                >
+                  {about.button_text}
+                </a>
+              );
+            }
+          })()}
         </div>
         {/* Center column: image */}
         <div className="flex justify-center h-full w-full items-center">
-          <div className="relative w-full h-64 md:h-[28rem] rounded-2xl overflow-hidden">
-            <Image
-              src={about.center_image?.sizes?.large || about.center_image?.url}
-              alt={about.center_image?.alt || about.center_image?.title}
-              fill
-              className="object-contain"
-              priority
-            />
+          <div className="relative w-full aspect-square md:aspect-[4/5] rounded-2xl overflow-hidden">
+            {about.center_image?.sizes?.large || about.center_image?.url ? (
+              <Image
+                src={about.center_image.sizes.large || about.center_image.url}
+                alt={about.center_image.alt || about.center_image.title || 'About Us Image'}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-contain"
+                priority
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                <span className="text-gray-400">No image available</span>
+              </div>
+            )}
           </div>
         </div>
         {/* Right column: why/faq */}

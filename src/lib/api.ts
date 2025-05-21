@@ -1,8 +1,12 @@
 import { WordPressPost, WordPressPage, WordPressCategory, WordPressTag, WordPressMedia } from '@/types/wordpress';
 
 // WordPress API Configuration
-const API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || 'http://ceylonicus.local/wp-json/wp/v2';
+const API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 const AUTH_TOKEN = process.env.WORDPRESS_AUTH_TOKEN;
+
+if (!API_URL) {
+  throw new Error('WordPress API URL is not set. Please define NEXT_PUBLIC_WORDPRESS_API_URL in your .env.local file.');
+}
 
 // API Endpoints
 export const ENDPOINTS = {
@@ -11,6 +15,8 @@ export const ENDPOINTS = {
   categories: `${API_URL}/categories`,
   tags: `${API_URL}/tags`,
   media: `${API_URL}/media`,
+  menu: `${API_URL}/menu`,
+  tour: `${API_URL}/tour`,
 };
 
 // API Headers
@@ -81,11 +87,9 @@ export async function fetchPost(slug: string): Promise<WordPressPost> {
 export async function fetchPages(): Promise<WordPressPage[]> {
   try {
     const response = await fetch(
-      `${API_URL}/pages?_embed&acf=true`,
+      `${API_URL}/pages?_embed&acf=true&acf_format=standard`,
       {
-        headers: {
-          ...(AUTH_TOKEN && { Authorization: `Bearer ${AUTH_TOKEN}` })
-        }
+        headers: getHeaders(),
       }
     );
     return handleResponse<WordPressPage[]>(response);
@@ -145,7 +149,7 @@ export async function fetchMedia(id: number): Promise<WordPressMedia> {
 }
 
 export async function fetchHeaderMenu() {
-  const response = await fetch(`${API_URL}/menu?slug=main-menu&acf_format=standard`, {
+  const response = await fetch(`${ENDPOINTS.menu}?slug=main-menu&acf_format=standard`, {
     headers: getHeaders(),
   });
   const data = await response.json();

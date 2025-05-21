@@ -3,8 +3,9 @@ import { Slider } from '@/components/Slider';
 import { AboutUs } from '@/components/AboutUs';
 import { OurTours } from '@/components/OurTours';
 import ContactForm7 from '@/components/ContactForm7';
-import { fetchPages } from '@/lib/api';
+import { fetchPages, ENDPOINTS } from '@/lib/api';
 import { WordPressHomePage, WordPressPage, WordPressSliderSlide, WordPressAboutUs, WordPressAboutUsFAQ, WordPressTourPost } from '@/types/wordpress';
+import { Testimonials } from '@/components/Testimonials';
 
 // Define the ACF type directly
 type HomePageACF = {
@@ -21,10 +22,21 @@ export default async function Home() {
     const sliderData = homePage?.acf?.slider;
     const aboutData = homePage?.acf;
 
+    console.log('Raw Home Page Data:', JSON.stringify(homePage, null, 2));
+    console.log('About Data:', JSON.stringify(aboutData, null, 2));
+
     // Fetch tours from CPT
-    const tourRes = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API_URL || 'http://ceylonicus.local/wp-json/wp/v2'}/tour`);
+    const tourRes = await fetch(`${ENDPOINTS.tour}`);
     const tourPosts: WordPressTourPost[] = await tourRes.json();
     const tours = tourPosts[0]?.acf?.tour_list || [];
+
+    // Fetch testimonials from CPT
+    const testimonialRes = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/testimonial`);
+    const testimonialPosts = await testimonialRes.json();
+    const testimonialACF = testimonialPosts[0]?.acf || {};
+    const testimonials = testimonialACF.testimonial_list || [];
+    const testimonialsHeading = testimonialACF.heading || '';
+    const testimonialsSubheading = testimonialACF.subheading || '';
 
     if (!sliderData || !Array.isArray(sliderData)) {
       return (
@@ -52,6 +64,9 @@ export default async function Home() {
     const aboutUsFaq = Array.isArray(aboutData?.why_us_faq)
       ? aboutData.why_us_faq.filter((item: WordPressAboutUsFAQ) => item.acf_fc_layout === 'faq')
       : [];
+    
+    console.log('AboutUs FAQ:', JSON.stringify(aboutUsFaq, null, 2));
+    
     const aboutUs: WordPressAboutUs = {
       sub_heading: aboutData?.sub_heading || '',
       main_heading: aboutData?.main_heading || '',
@@ -81,6 +96,8 @@ export default async function Home() {
       why_us_faq: aboutUsFaq,
     };
 
+    console.log('Final AboutUs Data:', JSON.stringify(aboutUs, null, 2));
+
     return (
       <main className="min-h-screen w-full">
         <Slider slides={slides} />
@@ -90,11 +107,13 @@ export default async function Home() {
           subheading={tourPosts[0]?.acf?.sub_heading || ''}
           heading={tourPosts[0]?.acf?.heading || ''}
         />
+       
         <ContactForm7 
           subheading={String((homePage?.acf as HomePageACF)?.subheading || '')}
           heading={String((homePage?.acf as HomePageACF)?.heading || '')}
           backgroundImage={(homePage?.acf as HomePageACF)?.['background-image']?.url || ''}
         />
+         <Testimonials heading={testimonialsHeading} subheading={testimonialsSubheading} testimonials={testimonials} />
       </main>
     );
   } catch (error) {
