@@ -39,7 +39,7 @@ export function OurTours({ tours, subheading = 'Our Tours', heading = 'Explore O
             {tours.map((tour, idx) => (
               <SwiperSlide key={idx}>
                 <Link
-                  href={`/tours/${idx}`}
+                  href={`/our-tours/${tour.slug}`}
                   className="group flex flex-col items-center bg-white rounded-2xl p-[5px] transition-shadow cursor-pointer w-full"
                 >
                   <div className="relative w-full h-112 rounded-t-2xl overflow-hidden flex items-center justify-center bg-white">
@@ -68,7 +68,7 @@ export function OurTours({ tours, subheading = 'Our Tours', heading = 'Explore O
               {tours.slice(0, 4).map((tour, idx) => (
                 <Link
                   key={idx}
-                  href={`/tours/${idx}`}
+                  href={`/our-tours/${tour.slug}`}
                   className="group flex flex-col items-center bg-white rounded-2xl p-[5px] transition-shadow cursor-pointer"
                 >
                   <div className="relative w-full h-96 rounded-t-2xl overflow-hidden flex items-center justify-center bg-white">
@@ -99,7 +99,7 @@ export function OurTours({ tours, subheading = 'Our Tours', heading = 'Explore O
                 {tours.slice(4, 7).map((tour, idx) => (
                   <Link
                     key={idx + 4}
-                    href={`/tours/${idx + 4}`}
+                    href={`/our-tours/${tour.slug}`}
                     className="group flex flex-col items-center bg-white rounded-2xl p-[5px] transition-shadow cursor-pointer"
                   >
                     <div className="relative w-full h-96 rounded-t-2xl overflow-hidden flex items-center justify-center bg-white">
@@ -126,7 +126,7 @@ export function OurTours({ tours, subheading = 'Our Tours', heading = 'Explore O
               {tours.slice(7).map((tour, idx) => (
                 <Link
                   key={idx + 7}
-                  href={`/tours/${idx + 7}`}
+                  href={`/our-tours/${tour.slug}`}
                   className="group flex flex-col items-center bg-white rounded-2xl p-[5px] transition-shadow cursor-pointer"
                 >
                   <div className="relative w-full h-96 rounded-t-2xl overflow-hidden flex items-center justify-center bg-white">

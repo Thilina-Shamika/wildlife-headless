@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { fetchHeaderMenu } from '@/lib/api';
 import { Menu, X } from 'lucide-react';
 
@@ -33,10 +34,27 @@ function getFrontendPath(wpUrl: string) {
 export function Header() {
   const [header, setHeader] = useState<HeaderMenu | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     fetchHeaderMenu().then(setHeader);
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Determine header background: transparent for home, black for others, black+blurred on scroll
+  const isHome = pathname === '/';
+  let headerBg = isHome ? 'bg-transparent' : 'bg-black';
+  if (scrolled) {
+    headerBg = 'bg-black/80 backdrop-blur-md';
+  }
 
   return (
     <>
@@ -92,7 +110,7 @@ export function Header() {
           </ul>
         </div>
       </div>
-      <header className="fixed top-0 left-0 w-full z-30 backdrop-blur-md shadow-none border-b border-white/10 transition-all duration-300 sticky">
+      <header className={`fixed top-0 left-0 w-full z-30 shadow-none border-b border-white/10 transition-all duration-300 sticky ${headerBg}`}>
         <nav className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
           <div>
             <Link href="/">
@@ -120,7 +138,7 @@ export function Header() {
                   {isInternal ? (
                     <Link
                       href={frontendPath}
-                      className="hover:text-primary transition-colors text-white"
+                      className="transition-colors text-white hover:text-[#016a3b]"
                     >
                       {item.page_name}
                     </Link>
@@ -129,7 +147,7 @@ export function Header() {
                       href={item.page_link.url}
                       target={item.page_link.target || '_self'}
                       rel={item.page_link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                      className="hover:text-primary transition-colors text-white"
+                      className="transition-colors text-white hover:text-[#016a3b]"
                     >
                       {item.page_name}
                     </a>
@@ -147,6 +165,11 @@ export function Header() {
             {isOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
           </button>
         </nav>
+        <style jsx global>{`
+          .hover\:text-\[#016a3b\]:hover {
+            color: #016a3b !important;
+          }
+        `}</style>
       </header>
     </>
   );

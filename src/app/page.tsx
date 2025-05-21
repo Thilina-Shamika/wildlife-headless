@@ -15,6 +15,15 @@ type HomePageACF = {
   [key: string]: unknown;
 };
 
+function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 export default async function Home() {
   try {
     const pages = await fetchPages();
@@ -28,7 +37,10 @@ export default async function Home() {
     // Fetch tours from CPT
     const tourRes = await fetch(`${ENDPOINTS.tour}`);
     const tourPosts: WordPressTourPost[] = await tourRes.json();
-    const tours = tourPosts[0]?.acf?.tour_list || [];
+    const tours = (tourPosts[0]?.acf?.tour_list || []).map((tour) => ({
+      ...tour,
+      slug: slugify(tour.tour_heading)
+    }));
 
     // Fetch testimonials from CPT
     const testimonialRes = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/testimonial`);

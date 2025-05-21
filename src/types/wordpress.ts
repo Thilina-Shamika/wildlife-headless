@@ -221,6 +221,7 @@ export interface WordPressTour {
   tour_short_description: string;
   tour_full_description: string;
   gallery: WordPressTourImage[];
+  slug: string;
 }
 
 export interface WordPressTourPost {

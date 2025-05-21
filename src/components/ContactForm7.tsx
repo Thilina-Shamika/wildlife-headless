@@ -62,19 +62,10 @@ export default function ContactForm7({ subheading, heading, backgroundImage }: C
 
   return (
     <section
-      style={{
-        width: '100%',
-        minHeight: '80vh',
-        background: backgroundImage
-          ? `linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(${backgroundImage}) center/cover no-repeat`
-          : '#222',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        paddingTop: 88,
-        paddingBottom: 88,
-      }}
+      className={`w-full min-h-[80vh] flex items-center justify-center relative py-24 ${backgroundImage ? '' : 'bg-[#222]'}`}
+      style={backgroundImage ? {
+        background: `linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(${backgroundImage}) center/cover no-repeat`
+      } : {}}
     >
       {/* Mobile padding with a style tag */}
       <style>{`
@@ -84,63 +75,25 @@ export default function ContactForm7({ subheading, heading, backgroundImage }: C
           }
         }
       `}</style>
-      <div className="cf7-section-padding" style={{
-        position: 'relative',
-        zIndex: 2,
-        width: '100%',
-        maxWidth: 500,
-        margin: '0 auto',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
+      <div className="cf7-section-padding relative z-2 w-full max-w-[500px] mx-auto flex flex-col items-center justify-center">
         {subheading && (
-          <div style={{ color: '#fff', fontSize: 16, marginBottom: 8, marginTop: 0, textAlign: 'center', fontWeight: 400 }}>
+          <div className="text-white text-base mb-2 mt-0 text-center font-normal">
             {subheading}
           </div>
         )}
         {heading && (
-          <h1 style={{
-            color: '#fff',
-            fontSize: 56,
-            fontWeight: 700,
-            margin: 0,
-            marginBottom: 32,
-            textAlign: 'center',
-            lineHeight: 1.1,
-            letterSpacing: '-1px',
-          }}>{heading}</h1>
+          <h1 className="text-white text-5xl font-bold mb-8 text-center leading-tight tracking-tight">
+            {heading}
+          </h1>
         )}
-        <div style={{
-          width: '100%',
-          maxWidth: 500,
-          background: 'rgba(255,255,255,0.97)',
-          borderRadius: 12,
-          boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
-          padding: '2rem 1.5rem 1.5rem 1.5rem',
-          margin: '0 auto',
-        }}>
-          <div style={{ fontWeight: 500, fontSize: 16, marginBottom: 16, color: '#222' }}>Send us a Message</div>
+        <div className="w-full max-w-[500px] bg-white/90 rounded-xl shadow-lg p-8 pt-8 mx-auto">
+          <div className="font-medium text-base mb-4 text-gray-900">Send us a Message</div>
           {notification && (
             <div
-              style={{
-                marginBottom: 16,
-                borderRadius: 8,
-                background: notification.type === 'success' ? '#d1fae5' : '#fee2e2',
-                color: notification.type === 'success' ? '#065f46' : '#991b1b',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                textAlign: 'center',
-                fontWeight: 500,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                padding: '0.75rem 1rem',
-              }}
+              className={`mb-4 rounded-lg text-center font-medium flex items-center justify-center gap-2 p-3 ${notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} shadow`}
             >
               {notification.type === 'success' && (
-                <svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: 6 }}>
+                <svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-1">
                   <circle cx="10" cy="10" r="10" fill="#34D399"/>
                   <path d="M6 10.5L9 13.5L14 8.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -148,16 +101,16 @@ export default function ContactForm7({ subheading, heading, backgroundImage }: C
               {notification.message}
             </div>
           )}
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <input
               name="name"
               placeholder="Full Name"
               value={form.name}
               onChange={handleChange}
               required
-              style={{ padding: '0.75rem', borderRadius: 6, border: '1px solid #ddd', fontSize: 16 }}
+              className="p-3 rounded-md border border-gray-200 text-base"
             />
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <div className="flex gap-3 flex-wrap">
               <input
                 name="phone"
                 type="tel"
@@ -165,7 +118,7 @@ export default function ContactForm7({ subheading, heading, backgroundImage }: C
                 value={form.phone}
                 onChange={handleChange}
                 required
-                style={{ flex: '1 1 180px', minWidth: 0, padding: '0.75rem', borderRadius: 6, border: '1px solid #ddd', fontSize: 16 }}
+                className="flex-1 min-w-0 p-3 rounded-md border border-gray-200 text-base"
               />
               <input
                 name="email"
@@ -174,7 +127,7 @@ export default function ContactForm7({ subheading, heading, backgroundImage }: C
                 value={form.email}
                 onChange={handleChange}
                 required
-                style={{ flex: '1 1 180px', minWidth: 0, padding: '0.75rem', borderRadius: 6, border: '1px solid #ddd', fontSize: 16 }}
+                className="flex-1 min-w-0 p-3 rounded-md border border-gray-200 text-base"
               />
             </div>
             <input
@@ -183,7 +136,7 @@ export default function ContactForm7({ subheading, heading, backgroundImage }: C
               value={form.subject}
               onChange={handleChange}
               required
-              style={{ padding: '0.75rem', borderRadius: 6, border: '1px solid #ddd', fontSize: 16 }}
+              className="p-3 rounded-md border border-gray-200 text-base"
             />
             <textarea
               name="message"
@@ -191,24 +144,12 @@ export default function ContactForm7({ subheading, heading, backgroundImage }: C
               value={form.message}
               onChange={handleChange}
               required
-              style={{ minHeight: 100, padding: '0.75rem', borderRadius: 6, border: '1px solid #ddd', fontSize: 16 }}
+              className="min-h-[100px] p-3 rounded-md border border-gray-200 text-base"
             />
             <button
               type="submit"
               disabled={status === "loading"}
-              style={{
-                marginTop: 8,
-                padding: '0.75rem 0',
-                borderRadius: 999,
-                background: '#222',
-                color: '#fff',
-                fontWeight: 700,
-                fontSize: 18,
-                letterSpacing: 1,
-                border: 'none',
-                cursor: status === 'loading' ? 'not-allowed' : 'pointer',
-                transition: 'background 0.2s',
-              }}
+              className={`mt-2 p-3 rounded-full bg-[#222] text-white font-bold text-lg tracking-wide border-none transition-colors ${status === 'loading' ? 'opacity-60 cursor-not-allowed' : 'hover:bg-primary cursor-pointer'}`}
             >
               {status === "loading" ? "Sending..." : "SEND"}
             </button>
