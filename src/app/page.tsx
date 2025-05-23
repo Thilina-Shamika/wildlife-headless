@@ -6,6 +6,7 @@ import ContactForm7 from '@/components/ContactForm7';
 import { fetchPages, ENDPOINTS } from '@/lib/api';
 import { WordPressHomePage, WordPressPage, WordPressSliderSlide, WordPressAboutUs, WordPressAboutUsFAQ, WordPressTourPost } from '@/types/wordpress';
 import { Testimonials } from '@/components/Testimonials';
+import QuickBookingForm from '@/components/QuickBookingForm';
 
 // Define the ACF type directly
 type HomePageACF = {
@@ -111,8 +112,9 @@ export default async function Home() {
     console.log('Final AboutUs Data:', JSON.stringify(aboutUs, null, 2));
 
     return (
-      <main className="min-h-screen w-full">
+      <main className="w-full min-h-screen">
         <Slider slides={slides} />
+        <QuickBookingForm />
         <AboutUs about={aboutUs} />
         <OurTours 
           tours={tours} 
