@@ -93,7 +93,7 @@ export function AboutUs({ about }: AboutUsProps) {
             {about.why_us_faq?.map((faq, idx) => (
               <div key={idx} className="border rounded-lg overflow-hidden">
                 <button
-                  className="w-full flex justify-between items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 focus:outline-none"
+                  className="w-full flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-200 focus:outline-none"
                   onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
                   aria-expanded={openIndex === idx}
                   aria-controls={`faq-panel-${idx}`}

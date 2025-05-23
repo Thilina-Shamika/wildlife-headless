@@ -73,7 +73,9 @@ export default function QuickBookingForm() {
   };
 
   return (
+    
     <div className="w-full flex justify-center mt-[-3rem] z-10 relative">
+
       <form className="bg-white/90 rounded-2xl shadow-lg flex flex-row flex-wrap items-center justify-between px-6 py-4 gap-4 w-full max-w-4xl backdrop-blur-md" onSubmit={handleBookClick}>
         {/* Tours */}
         <div className="flex flex-col items-start flex-1 w-full">
